@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { removeCartItem, updateCartItem } from "../../../Redux/Customers/Cart/Action";
@@ -6,18 +6,28 @@ import { IconButton } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-const CartItem = ({ item,showButton }) => {
+const CartItem = ({ item,showButton,productQuantity }) => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
+ const [isCountExceeded,setisCountExceeded]=useState(false);
 
   const handleRemoveItemFromCart = () => {
     const data = { cartItemId: item?.id, jwt };
     dispatch(removeCartItem(data));
   };
   const handleUpdateCartItem=(num)=>{
+    
     const data={data:{quantity:item.quantity+num}, cartItemId:item?.id, jwt}
-    dispatch(updateCartItem(data))
+    if((data.data.quantity>productQuantity)){
+     setisCountExceeded(true);
+    }
+    else{
+      dispatch(updateCartItem(data))
+      setisCountExceeded(false)
+    }
+    
   }
+  console.log(productQuantity,"ProductQuantity")
   return (
     <div className="p-5 shadow-lg border rounded-md">
       <div className="flex items-center">
@@ -43,6 +53,11 @@ const CartItem = ({ item,showButton }) => {
           </div>
         </div>
       </div>
+      {isCountExceeded &&
+      <div style={{marginTop:"10px" , marginBottom:"10px"}}>
+        <p>Item is out of stock</p>
+        </div>
+      }
      {showButton&& <div className="lg:flex items-center lg:space-x-10 pt-4">
         <div className="flex items-center space-x-2 ">
           <IconButton onClick={()=>handleUpdateCartItem(-1)} disabled={item?.quantity<=1} color="primary" aria-label="add an alarm">
@@ -50,7 +65,7 @@ const CartItem = ({ item,showButton }) => {
           </IconButton>
 
           <span className="py-1 px-7 border rounded-sm">{item?.quantity}</span>
-          <IconButton onClick={()=>handleUpdateCartItem(1)} color="primary" aria-label="add an alarm">
+          <IconButton onClick={()=>handleUpdateCartItem(1)} disabled={item?.quantity>productQuantity} color="primary" aria-label="add an alarm">
             <AddCircleOutlineIcon />
           </IconButton>
         </div>

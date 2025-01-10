@@ -40,14 +40,14 @@ console.log(order,"Order Number ");
   const handleFilterChange = (event) => {
     const { value, checked } = event.target;
     console.log("nssjksnjk");
-
+console.log(selectedStatuses,"SelectedStatus")
     setSelectedStatuses((prevStatuses) =>
       checked
         ? [...prevStatuses, value]
         : prevStatuses.filter((status) => status !== value)
     );
   };
-
+console.log(selectedStatuses,"selectedstatus")
   // Filter and sort orders
   const filteredOrders =
     selectedStatuses.length > 0
@@ -58,12 +58,14 @@ console.log(order,"Order Number ");
         )
       : order.orders;
 
-  //console.log(filteredOrders,"Filtered Orders");
+  console.log(filteredOrders,"Filtered Orders");
 
   // Add a check for canceled orders specifically
   const canceledOrders = filteredOrders?.filter(
     (order) => order.orderStatus === "CANCELLED"
   );
+
+  console.log(canceledOrders,"cancelledOrders")
 
   return (
     <Box className="px-10">
@@ -101,7 +103,7 @@ console.log(order,"Order Number ");
               <p>No orders found for the selected status.</p>
             )}
 
-            {canceledOrders?.length > 0 && (
+            {/* {canceledOrders?.length > 0 ? (
               <>
                 <h2 className="font-bold text-lg mt-5">Cancelled Orders</h2>
                 {canceledOrders.map((order) =>
@@ -110,7 +112,12 @@ console.log(order,"Order Number ");
                   ))
                 )}
               </>
-            )}
+            ):
+            (
+              <p>No orders found for the selected status.</p>
+            )
+            
+            } */}
           </Box>
         </Grid>
       </Grid>

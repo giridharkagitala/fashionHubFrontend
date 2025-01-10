@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import qs from 'qs'
 
 import { API_BASE_URL } from "../../../config/api";
 import {
@@ -15,6 +15,9 @@ import {
   UPDATE_CART_ITEM_FAILURE,
   UPDATE_CART_ITEM_REQUEST,
   UPDATE_CART_ITEM_SUCCESS,
+  GET_ITEM_INVENTORY,
+  GET_ITEM_INVENTORY_FAILURE,
+  GET_ITEM_INVENTORY_SUCCESS,
 } from "./ActionType";
 
 export const addItemToCart = (reqData) => async (dispatch) => {
@@ -47,6 +50,40 @@ console.log("add item to cart ",data)
     });
   }
 };
+
+export const getProductInventory = (reqData)=>async(dispatch)=>{
+  try {
+    // dispatch({ type: GET_ITEM_INVENTORY });
+    const config = {
+        headers: {
+          Authorization: `Bearer ${reqData.jwt}`,
+          "Content-Type":"application/json"
+        },
+        params:{
+          productIds:reqData.data
+        },
+        paramsSerializer:params=>{
+          return qs.stringify(params,{arrayFormat:'repeat'})
+        }
+      };
+
+    const { data } = await axios.get(`${API_BASE_URL}/api/cart_items/productItemsList`,config);
+    console.log(data,"data")
+
+    dispatch({
+      type: GET_ITEM_INVENTORY,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: GET_ITEM_INVENTORY_FAILURE,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+}
 export const getCart = (jwt) => async (dispatch) => {
   try {
     dispatch({ type: GET_CART_REQUEST });

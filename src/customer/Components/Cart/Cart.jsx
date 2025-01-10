@@ -4,27 +4,37 @@ import { Badge, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getCart } from "../../../Redux/Customers/Cart/Action";
+import { getCart, getProductInventory } from "../../../Redux/Customers/Cart/Action";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
   const {cart}=useSelector(store=>store);
+  const productInventoryArray=cart.productInventory
   console.log("cart ",cart)
 
   useEffect(() => {
     dispatch(getCart(jwt));
+    const existingProductsIds= cart?.cartItems.map((item)=>{
+     return  item.product.id
+    })
+    const reqBody={
+      jwt,data:existingProductsIds
+    }
+    dispatch(getProductInventory(reqBody))
   }, [jwt]);
+
+  console.log(productInventoryArray,"Cart")
   
   return (
     <div className="">
       {cart.cartItems.length>0 && <div className="lg:grid grid-cols-3 lg:px-16 relative">
         <div className="lg:col-span-2 lg:px-5 bg-white">
         <div className=" space-y-3">
-          {cart.cartItems.map((item) => (
+          {cart.cartItems.map((item,index) => (
             <>
-              <CartItem item={item} showButton={true}/>
+              <CartItem item={item} showButton={true} productQuantity={productInventoryArray[index]} />
             </>
           ))}
         </div>
