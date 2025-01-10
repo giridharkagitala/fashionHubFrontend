@@ -16,14 +16,22 @@ const Cart = () => {
 
   useEffect(() => {
     dispatch(getCart(jwt));
-    const existingProductsIds= cart?.cartItems.map((item)=>{
-     return  item.product.id
-    })
+
+  }, [jwt,dispatch]);
+
+  useEffect(()=>{
+if(cart && cart.cartItems){
+  const existingProductsIds= cart?.cartItems?.map((item)=> item?.product?.id)
+   console.log(existingProductsIds,"Check")
+
     const reqBody={
       jwt,data:existingProductsIds
     }
     dispatch(getProductInventory(reqBody))
-  }, [jwt]);
+}
+
+
+  },[jwt,cart.cartItems,dispatch])
 
   console.log(productInventoryArray,"Cart")
   

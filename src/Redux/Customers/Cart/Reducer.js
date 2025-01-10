@@ -11,6 +11,9 @@ import {
   UPDATE_CART_ITEM_FAILURE,
   UPDATE_CART_ITEM_REQUEST,
   UPDATE_CART_ITEM_SUCCESS,
+  GET_ITEM_INVENTORY,
+  GET_ITEM_INVENTORY_SUCCESS,
+  GET_ITEM_INVENTORY_FAILURE
 } from "./ActionType";
 
 const initialState = {
@@ -18,6 +21,7 @@ const initialState = {
   loading: false,
   error: null,
   cartItems: [],
+  productInventory: [],
 };
 
 const cartReducer = (state = initialState, action) => {
@@ -79,6 +83,15 @@ const cartReducer = (state = initialState, action) => {
         error: action.payload,
         loading: false,
       };
+
+      case GET_ITEM_INVENTORY:
+        return{
+          ...state,
+          productInventory:action.payload,
+          loading:false,
+        }
+        case GET_ITEM_INVENTORY_FAILURE:
+        case GET_ITEM_INVENTORY_SUCCESS:
     default:
       return state;
   }
